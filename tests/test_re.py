@@ -1,65 +1,57 @@
-from tests.assertions import assert_match, assert_nomatch
-from typedre import Pattern
-import pytest
+from typedre import match, fullmatch, search, finditer, c
 
 
-def test_groups():
-    with pytest.raises(RuntimeError):
-        Pattern("no groups", str)
-    with pytest.raises(RuntimeError):
-        Pattern("(too)(many)(groups)", str)
-    Pattern("just(enough)groups", str)
-
-
-def test_nogroups():
-    pat = Pattern(r"hello")
-    assert_match(pat, "hello")
-    assert_nomatch(pat, "goodbye")
-
-
-def test_hello_person():
-    pat = Pattern(r"hello, (\w+)", str)
-    assert_match(pat, "hello, Dominic", "Dominic")
-    assert_match(pat, "hello, Peter", "Peter")
-    assert_nomatch(pat, "Hello, Dominic")
-    assert_nomatch(pat, "Hello, 1")
-
-
-def test_rgb():
-    pat = Pattern(
-        r"rgb\((\d+),(\d+),(\d+)\)",
-        int,
-        int,
-        int,
+def test_match():
+    m = match(
+        r"(hello|hi), (\w+)! You're (\d+) years old.",
+        "hi, dom! You're 12 years old. Let's just ignore the rest of this sentence",
+        c(str, str, int),
     )
-    assert_match(pat, "rgb(50,120,47)", 50, 120, 47)
+    assert m is not None
+    assert m[0] == "hi, dom! You're 12 years old."
+    assert m[1] == "hi"
+    assert m[2] == "dom"
+    assert m[3] == 12
 
 
-def test_huge():
-    pat = Pattern(
-        r"(1)(2)(a)(3.0)(b)(c)(4)(5)(d)(e)",
-        int,
-        int,
-        str,
-        float,
-        str,
-        str,
-        int,
-        int,
-        str,
-        str,
+def test_fullmatch():
+    m = fullmatch(
+        r"(hello|hi), (\w+)! You're (\d+) years old.",
+        "hi, dom! You're 12 years old. Let's just ignore the rest of this sentence",
+        c(str, str, int),
     )
-    assert_match(
-        pat,
-        "12a3.0bc45de",
-        1,
-        2,
-        "a",
-        3.0,
-        "b",
-        "c",
-        4,
-        5,
-        "d",
-        "e",
+    assert m is None
+
+    m = fullmatch(
+        r"(hello|hi), (\w+)! You're (\d+) years old.",
+        "hi, dom! You're 12 years old.",
+        c(str, str, int),
     )
+    assert m is not None
+    assert m[0] == "hi, dom! You're 12 years old."
+    assert m[1] == "hi"
+    assert m[2] == "dom"
+    assert m[3] == 12
+
+
+def test_search():
+    m = search(r"(3.141\d+)", "the value of pi is 3.141592653...", c(float))
+    assert m is not None
+    assert m[0] == "3.141592653"
+    assert m[1] == 3.141592653
+
+
+def test_finditer():
+    ms = list(finditer(r"([A-Z])(\d)", "A3 B8 G1", c(str, int)))
+    assert len(ms)
+    assert ms[0][0] == "A3"
+    assert ms[0][1] == "A"
+    assert ms[0][2] == 3
+
+    assert ms[1][0] == "B8"
+    assert ms[1][1] == "B"
+    assert ms[1][2] == 8
+
+    assert ms[2][0] == "G1"
+    assert ms[2][1] == "G"
+    assert ms[2][2] == 1

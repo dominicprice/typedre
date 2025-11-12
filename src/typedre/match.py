@@ -9,7 +9,7 @@ Ts = TypeVarTuple("Ts")
 
 class Match(tuple[str, *Ts]):
     def __new__(cls, m: re.Match[str], pattern: "Pattern"):
-        groups = [c(g) for c, g in zip(pattern._conv, m.groups())]
+        groups = pattern._conv(m.groups())
         return super().__new__(cls, (m[0], *groups))
 
     def __init__(self, m: re.Match[str], pattern: "Pattern"):
