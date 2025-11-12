@@ -2,8 +2,8 @@ import re
 import sys
 from typing import Generator, Generic, TypeVarTuple, overload
 
-from typedre.match import Match
 from typedre.converterlist import ConverterList
+from typedre.match import Match
 
 Ts = TypeVarTuple("Ts")
 
@@ -78,11 +78,11 @@ class Pattern(Generic[*Ts]):
         *,
         flags: "re._FlagsType" = 0,
     ) -> "Pattern[*Ts]": ...
-    def __new__(
+    def __new__(  # type: ignore
         cls,
         pattern: str | re.Pattern[str],
         converters: ConverterList[*Ts] | None = None,
         *,
         flags: "re._FlagsType" = 0,
-    ) -> "Pattern[()] | Pattern[*Ts]":
+    ):
         return super().__new__(cls)

@@ -2,8 +2,8 @@ import builtins as b
 import re
 from typing import Callable, Generic, Iterable, TypeVar, TypeVarTuple
 
-from typedre.pattern import Pattern
 from typedre.converterlist import ConverterList
+from typedre.pattern import Pattern
 
 T = TypeVar("T")
 Ts = TypeVarTuple("Ts")

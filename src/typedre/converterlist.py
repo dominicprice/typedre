@@ -1,5 +1,4 @@
-from typing import Callable, Any, TypeVarTuple, TypeVar, overload, Iterable
-
+from typing import Any, Callable, Iterable, TypeVar, TypeVarTuple, overload
 
 T1 = TypeVar("T1")
 T2 = TypeVar("T2")

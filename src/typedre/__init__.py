@@ -11,12 +11,12 @@ from re import L as L
 from re import M as M
 from re import S as S
 from re import X as X
-from typing import TYPE_CHECKING, TypeVarTuple, Generator
+from typing import TYPE_CHECKING, Generator, TypeVarTuple
 
 from typedre.builder import PatternBuilder as _PatternBuilder
+from typedre.converterlist import ConverterList as c
 from typedre.match import Match as Match
 from typedre.pattern import Pattern as Pattern
-from typedre.converterlist import ConverterList as c
 
 if TYPE_CHECKING:
     import re
