@@ -53,7 +53,7 @@ if __name__ == "__main__":
     # get new version number from arguments
     new_ver = ver
     force = False
-    for arg in sys.argv[1]:
+    for arg in sys.argv[1:]:
         if arg == "-f":
             force = True
         elif arg == "-p":
@@ -97,5 +97,5 @@ if __name__ == "__main__":
     # write all new versions
     with open("pyproject.toml", "w") as f:
         toml.dump(pyproject, f)
-    with open("src/typedre/__init__.py") as f:
-        f.write(ast.dump(code))
+    with open("src/typedre/__init__.py", "w") as f:
+        f.write(ast.unparse(code))

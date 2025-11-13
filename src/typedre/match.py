@@ -8,8 +8,8 @@ Ts = TypeVarTuple("Ts")
 
 
 class Match(tuple[str, *Ts]):
-    def __new__(cls, m: re.Match[str], pattern: "Pattern"):
-        groups = pattern._conv(m.groups())
+    def __new__(cls, m: re.Match[str], pattern: "Pattern[*Ts]"):
+        groups = tuple(c(m) for c, m in zip(pattern._conv, m.groups()))
         return super().__new__(cls, (m[0], *groups))
 
     def __init__(self, m: re.Match[str], pattern: "Pattern"):

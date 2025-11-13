@@ -1,8 +1,7 @@
 import builtins as b
 import re
-from typing import Callable, Generic, Iterable, TypeVar, TypeVarTuple
+from typing import Callable, Generic, Iterable, TypeVar, TypeVarTuple, Any
 
-from typedre.converterlist import ConverterList
 from typedre.pattern import Pattern
 
 T = TypeVar("T")
@@ -12,12 +11,12 @@ Ts = TypeVarTuple("Ts")
 class PatternBuilder(Generic[*Ts]):
     def __init__(self, prefix: str = ""):
         self.pattern = prefix
-        self.converters: ConverterList[*Ts] = ConverterList()  # type: ignore
+        self.converters: list[Callable[[str], Any]] = []
 
-    def compile(self) -> Pattern[*Ts]:
+    def compile(self, flags: "re._FlagsType" = 0) -> Pattern[*Ts]:
         "returns a Pattern from the current state of the builder"
         pattern = re.compile(self.pattern)
-        return Pattern(pattern, self.converters)
+        return Pattern(pattern, tuple(self.converters), flags=flags)  # type: ignore
 
     def lit(self, pattern: b.str) -> "PatternBuilder[*Ts]":
         "adds an arbitrary non-matching pattern"
@@ -39,7 +38,7 @@ class PatternBuilder(Generic[*Ts]):
     ) -> "PatternBuilder[*Ts, T]":
         "adds an arbitrary capturing group using the given converter"
         self.pattern += "(" + pattern + ")"
-        self.converters = self.converters.join(converter)  # type: ignore
+        self.converters.append(converter)
         return self  # type: ignore
 
     def float(self, allow_exp: bool = True) -> "PatternBuilder[*Ts, b.float]":

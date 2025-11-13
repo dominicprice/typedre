@@ -1,11 +1,11 @@
-from typedre import match, fullmatch, search, finditer, c
+from typedre import match, fullmatch, search, finditer
 
 
 def test_match():
     m = match(
         r"(hello|hi), (\w+)! You're (\d+) years old.",
         "hi, dom! You're 12 years old. Let's just ignore the rest of this sentence",
-        c(str, str, int),
+        (str, str, int),
     )
     assert m is not None
     assert m[0] == "hi, dom! You're 12 years old."
@@ -18,14 +18,14 @@ def test_fullmatch():
     m = fullmatch(
         r"(hello|hi), (\w+)! You're (\d+) years old.",
         "hi, dom! You're 12 years old. Let's just ignore the rest of this sentence",
-        c(str, str, int),
+        (str, str, int),
     )
     assert m is None
 
     m = fullmatch(
         r"(hello|hi), (\w+)! You're (\d+) years old.",
         "hi, dom! You're 12 years old.",
-        c(str, str, int),
+        (str, str, int),
     )
     assert m is not None
     assert m[0] == "hi, dom! You're 12 years old."
@@ -35,14 +35,14 @@ def test_fullmatch():
 
 
 def test_search():
-    m = search(r"(3.141\d+)", "the value of pi is 3.141592653...", c(float))
+    m = search(r"(3.141\d+)", "the value of pi is 3.141592653...", (float,))
     assert m is not None
     assert m[0] == "3.141592653"
     assert m[1] == 3.141592653
 
 
 def test_finditer():
-    ms = list(finditer(r"([A-Z])(\d)", "A3 B8 G1", c(str, int)))
+    ms = list(finditer(r"([A-Z])(\d)", "A3 B8 G1", (str, int)))
     assert len(ms)
     assert ms[0][0] == "A3"
     assert ms[0][1] == "A"

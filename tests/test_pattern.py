@@ -1,14 +1,14 @@
 from tests.assertions import assert_match, assert_nomatch
-from typedre import Pattern, c
+from typedre import Pattern
 import pytest
 
 
 def test_groups():
     with pytest.raises(RuntimeError):
-        Pattern("no groups", c(str))
+        Pattern("no groups", (str,))
     with pytest.raises(RuntimeError):
-        Pattern("(too)(many)(groups)", c(str))
-    Pattern("just(enough)groups", c(str))
+        Pattern("(too)(many)(groups)", (str,))
+    Pattern("just(enough)groups", (str,))
 
 
 def test_nogroups():
@@ -18,7 +18,7 @@ def test_nogroups():
 
 
 def test_hello_person():
-    pat = Pattern(r"hello, (\w+)", c(str))
+    pat = Pattern(r"hello, (\w+)", (str,))
     assert_match(pat, "hello, Dominic", "Dominic")
     assert_match(pat, "hello, Peter", "Peter")
     assert_nomatch(pat, "Hello, Dominic")
@@ -28,7 +28,7 @@ def test_hello_person():
 def test_rgb():
     pat = Pattern(
         r"rgb\((\d+),(\d+),(\d+)\)",
-        c(int, int, int),
+        (int, int, int),
     )
     assert_match(pat, "rgb(50,120,47)", 50, 120, 47)
 
@@ -36,7 +36,7 @@ def test_rgb():
 def test_huge():
     pat = Pattern(
         r"(1)(2)(a)(3.0)(b)(c)(4)(5)(d)(e)",
-        c(int, int, str, float, str, str, int, int, str, str),
+        (int, int, str, float, str, str, int, int, str, str),
     )
     assert_match(
         pat,
